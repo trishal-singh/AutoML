@@ -4,6 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 st.title("AUTOML")
 st.write("""Select a dataset and start creating models.""")
 dataset =st.sidebar.selectbox(label="Dataset:",options=('Iris',"Breast Cancer","Wine"))
@@ -33,6 +34,13 @@ def select_parameter(clf):
         params=dict()
         params["C"]=C
         params["kernel"]=kernel
+    if clf=="Random Forest":
+        n_estim=st.sidebar.number_input(label="N Estimators",value=10)
+        max_depth=st.sidebar.number_input(label="Maximum Depth",value=10)
+        params=dict()
+        params["n_estimators"]=n_estim
+        params["max_depth"]=max_depth
+
     return params
 param=select_parameter(model)
 def create_model(clf,params):
@@ -40,6 +48,8 @@ def create_model(clf,params):
         model=KNeighborsClassifier(**params)
     if clf=='SVM':
         model=SVC(**params)
+    if clf=="Random Forest":
+        model=RandomForestClassifier(**params)
     return model
 classifier=create_model(model,param)
 train_x,test_x,train_y,test_y=train_test_split(X,y,test_size=0.2,random_state=4)
